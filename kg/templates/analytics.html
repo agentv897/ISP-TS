@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spanner Analytics Dashboard | DILI Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #002970;
+            --secondary: #0055ff;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --border: #e2e8f0;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        h1 {
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+        .card h2 {
+            margin-top: 0;
+            font-size: 1.25rem;
+            border-bottom: 2px solid var(--bg);
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        th {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            color: #64748b;
+        }
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-search { background: #dcfce7; color: #166534; }
+        .badge-view { background: #dbeafe; color: #1e40af; }
+        .badge-chat { background: #fef9c3; color: #854d0e; }
+        
+        .chat-bubble {
+            background: #f1f5f9;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .chat-bubble .user { font-weight: 600; color: var(--secondary); display: block; margin-bottom: 4px; }
+        .chat-bubble .ai { font-weight: 600; color: var(--primary); display: block; margin-top: 8px; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Spanner Data Inking Dashboard</h1>
+            <a href="/" style="text-decoration: none; color: var(--secondary); font-weight: 600;">&larr; Back to App</a>
+        </header>
+
+        <div class="grid">
+            <!-- User Interactions -->
+            <div class="card">
+                <h2>User Interactions (Inked to Spanner)</h2>
+                <div id="interactions-list">Loading...</div>
+            </div>
+
+            <!-- Chat History -->
+            <div class="card">
+                <h2>Chat Analytics</h2>
+                <div id="chats-list">Loading...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function fetchAnalytics() {
+            try {
+                const response = await fetch('/api/analytics');
+                const data = await response.json();
+                
+                // Render Interactions
+                const intDiv = document.getElementById('interactions-list');
+                if (data.interactions && data.interactions.length > 0) {
+                    let html = '<table><thead><tr><th>Type</th><th>Target</th><th>Time</th></tr></thead><tbody>';
+                    data.interactions.forEach(i => {
+                        const badge = i.type === 'SEARCH' ? 'badge-search' : 'badge-view';
+                        html += `<tr>
+                            <td><span class="badge ${badge}">${i.type}</span></td>
+                            <td>${i.target || '-'}</td>
+                            <td style="font-size: 0.8rem; color: #64748b;">${i.time}</td>
+                        </tr>`;
+                    });
+                    html += '</tbody></table>';
+                    intDiv.innerHTML = html;
+                } else {
+                    intDiv.innerHTML = '<p>No interactions recorded yet.</p>';
+                }
+
+                // Render Chats
+                const chatDiv = document.getElementById('chats-list');
+                if (data.chats && data.chats.length > 0) {
+                    let html = '';
+                    data.chats.forEach(c => {
+                        html += `
+                        <div class="chat-bubble">
+                            <span style="font-size: 0.75rem; color: #94a3b8; float: right;">${c.time}</span>
+                            <span class="user">Q (${c.context}): ${c.msg}</span>
+                            <span class="ai">A: ${c.res}</span>
+                        </div>`;
+                    });
+                    chatDiv.innerHTML = html;
+                } else {
+                    chatDiv.innerHTML = '<p>No chat history yet.</p>';
+                }
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('interactions-list').innerHTML = 'Error loading data.';
+            }
+        }
+
+        fetchAnalytics();
+        // Refresh every 30 seconds
+        setInterval(fetchAnalytics, 30000);
+    </script>
+</body>
+</html>

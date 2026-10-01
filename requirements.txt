@@ -1,0 +1,31 @@
+# Shared Core
+fastapi==0.109.0
+uvicorn==0.27.0
+python-multipart==0.0.9
+pandas
+numpy<2
+requests
+python-dotenv
+openai
+scikit-learn<1.5
+openpyxl
+torch
+
+# Data Extraction
+azure-ai-documentintelligence
+
+# Knowledge Graph
+flask
+flask-cors
+flasgger
+gunicorn
+google-cloud-spanner
+
+# Toxicity Prediction
+rdkit
+biopython
+tabulate
+chemprop
+streamlit
+plotly
+sentence-transformers

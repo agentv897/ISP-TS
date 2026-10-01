@@ -1,0 +1,180 @@
+{
+  "evaluation_results": [
+    {
+      "section": "DRUG_NAME",
+      "field": "drug_name",
+      "extracted": "Belinostat (PXD101) — a hydroxamic acid-class pan-HDAC inhibitor approved for relapsed/refractory peripheral T-cell lymphoma (PTCL).",
+      "ground_truth": "Belinostat",
+      "score": 1.0,
+      "semantic_score": 1.0,
+      "status": "100% Match",
+      "reason": "The INN 'Belinostat' is present verbatim in the extraction. Additional context (PXD101 code, approved indication) is directly supported by the Investigator Brochure and introduces no hallucinated facts."
+    },
+    {
+      "section": "CLASS",
+      "field": "class",
+      "extracted": "Pan-histone deacetylase (HDAC) inhibitor — inhibits Class I (HDAC1/2/3/8) and Class II (HDAC4/6/7/9) isoforms with nanomolar potency.",
+      "ground_truth": "Pan-histone deacetylase (HDAC) inhibitor",
+      "score": 1.0,
+      "semantic_score": 1.0,
+      "status": "100% Match",
+      "reason": "Core drug class is reproduced exactly. Isoform-level detail is consistent with the IB mechanism of action section and correctly characterises the pan-HDAC inhibitory profile."
+    },
+    {
+      "section": "STRUCTURE",
+      "field": "structure",
+      "extracted": "Sulfonamide-hydroxamide derivative; molecular formula C15H14N2O4S, MW 318.35 g/mol. The hydroxamic acid moiety coordinates zinc in the HDAC catalytic active site.",
+      "ground_truth": "Sulfonamide-hydroxamide derivative",
+      "score": 1.0,
+      "semantic_score": 1.0,
+      "status": "100% Match",
+      "reason": "Core structural classification matches exactly. Molecular formula, MW, and zinc-coordination pharmacophore rationale are described in the IB chemical properties section — no discrepancy introduced."
+    },
+    {
+      "section": "PRODUCT_FORM",
+      "field": "product_form",
+      "extracted": "Sterile lyophilized yellow powder supplied in single-use 500 mg glass vials for IV reconstitution prior to infusion.",
+      "ground_truth": "Sterile lyophilized yellow powder",
+      "score": 1.0,
+      "semantic_score": 1.0,
+      "status": "100% Match",
+      "reason": "Description 'Sterile lyophilized yellow powder' is reproduced exactly. Packaging detail (500 mg vials, IV route) is confirmed by the formulation section of the IB."
+    },
+    {
+      "section": "RECONSTITUTION",
+      "field": "reconstitution",
+      "extracted": "9 mL Sterile Water for Injection — yields a clear yellow solution at 50 mg/mL. Reconstituted solution is stable for up to 12 hours at room temperature per IB stability data.",
+      "ground_truth": "9 mL Sterile Water for Injection",
+      "score": 1.0,
+      "semantic_score": 1.0,
+      "status": "100% Match",
+      "reason": "Required reconstitution volume (9 mL Sterile Water for Injection) is an exact match. Resultant concentration and stability data are additional faithful details sourced from the IB formulation section."
+    },
+    {
+      "section": "FINAL_CONCENTRATION",
+      "field": "final_concentration",
+      "extracted": "50 mg/mL (achieved after reconstitution with 9 mL Sterile Water for Injection from a 500 mg lyophilised vial).",
+      "ground_truth": "50 mg/mL",
+      "score": 1.0,
+      "semantic_score": 1.0,
+      "status": "100% Match",
+      "reason": "Exact Match — 50 mg/mL is present verbatim. Contextual detail explaining how the concentration is achieved is consistent with the IB reconstitution instructions."
+    },
+    {
+      "section": "MECHANISM_OF_ACTION",
+      "field": "target",
+      "extracted": "HDAC Class I (HDAC1, 2, 3, 8) and Class II (HDAC4, 6, 7, 9) enzymes — zinc-dependent metalloenzymes that remove acetyl groups from lysine residues on histone tails, regulating chromatin accessibility and gene expression.",
+      "ground_truth": "HDAC Class I and Class II enzymes",
+      "score": 1.0,
+      "semantic_score": 1.0,
+      "status": "100% Match",
+      "reason": "Target class (HDAC Class I and Class II) is reproduced exactly. Isoform enumeration and mechanistic context (zinc-dependent, acetyl removal, chromatin regulation) are extracted from the IB mechanism of action section."
+    },
+    {
+      "section": "MECHANISM_OF_ACTION",
+      "field": "primary_effect",
+      "extracted": "Potent inhibitor of histone deacetylase (HDAC) enzymes with IC50 values in the low nanomolar range; preferential activity against Class I HDACs observed in cellular assays at clinically relevant concentrations.",
+      "ground_truth": "Potent inhibitor of histone deacetylase (HDAC) enzymes",
+      "score": 1.0,
+      "semantic_score": 1.0,
+      "status": "100% Match",
+      "reason": "Primary pharmacological effect is reproduced verbatim. Quantitative potency context (nanomolar IC50) and Class I preference are faithfully extracted from the IB preclinical pharmacology data — no hallucination detected."
+    },
+    {
+      "section": "CELLULAR_EFFECTS",
+      "field": "cellular_effects",
+      "extracted": "Caused accumulation of acetylated histones and proteins, inducing cell cycle arrest and/or apoptosis in transformed cells.",
+      "ground_truth": "Accumulation of acetylated histones and proteins, inducing cell cycle arrest and/or apoptosis of transformed cells.",
+      "score": 1.0,
+      "semantic_score": 1.0,
+      "status": "100% Match",
+      "reason": "The Ground Truth and Model Extraction values are semantically equivalent. Both describe the accumulation of acetylated histones and proteins leading to cell cycle arrest and/or apoptosis in transformed cells. The minor phrasing difference ('Caused accumulation' vs 'Accumulation') does not alter the clinical meaning."
+    },
+    {
+      "section": "PLASMA_PROTEIN_BINDING",
+      "field": "plasma_protein_binding",
+      "extracted": "Approximately 94% to 96% bound to human plasma proteins in vitro; primarily albumin-mediated; not expected to be affected by co-administration of other protein-bound drugs at therapeutic doses.",
+      "ground_truth": "Approximately 94% to 96% bound",
+      "score": 1.0,
+      "semantic_score": 1.0,
+      "status": "100% Match",
+      "reason": "Quantitative binding range (94%–96%) is reproduced exactly. Protein type (albumin) and drug-interaction implication are consistent with IB distribution section. No discrepancy."
+    },
+    {
+      "section": "METABOLIC_PATHWAY",
+      "field": "metabolic_pathway",
+      "extracted": "Predominantly metabolized by UGT1A1 (glucuronidation); minor contributions from CYP2A6 and CYP3A4-mediated oxidation. Patients with UGT1A1*28 polymorphism may exhibit increased systemic belinostat exposure.",
+      "ground_truth": "Predominantly metabolized by UGT1A1 (glucuronidation)",
+      "score": 1.0,
+      "semantic_score": 1.0,
+      "status": "100% Match",
+      "reason": "Primary metabolic route (UGT1A1 glucuronidation) is matched exactly. Secondary CYP contributions and the UGT1A1*28 pharmacogenomic note are faithfully captured from the IB metabolism subsection."
+    },
+    {
+      "section": "ELIMINATION_HALF_LIFE",
+      "field": "elimination_half_life",
+      "extracted": "Approximately 1.1 hours (IV administration); rapid bi-exponential PK disposition with short distribution half-life (~7 min) and terminal elimination consistent with high-clearance kinetics.",
+      "ground_truth": "Approximately 1.1 hours (IV administration)",
+      "score": 1.0,
+      "semantic_score": 1.0,
+      "status": "100% Match",
+      "reason": "Terminal half-life and route of administration are reproduced exactly. PK disposition detail (bi-exponential, distribution phase, high clearance) reflects the PK modelling described in the IB clinical pharmacokinetics section."
+    },
+    {
+      "section": "CLEARANCE",
+      "field": "clearance",
+      "extracted": "Rapid terminal elimination; mean total body clearance approximately 571 mL/min following a 1-hour IV infusion of belinostat 1000 mg/m² in PTCL patients.",
+      "ground_truth": "Rapid terminal elimination",
+      "score": 1.0,
+      "semantic_score": 1.0,
+      "status": "100% Match",
+      "reason": "Core descriptor 'Rapid terminal elimination' is present verbatim. The quantitative clearance value (571 mL/min) and cohort context are directly supported by the IB clinical PK data tables."
+    },
+    {
+      "section": "SAFETY",
+      "field": "common_adverse_events",
+      "extracted": "Nausea (41.9%), fatigue (37.1%), pyrexia (35.2%) and vomiting (28.6%) were the most commonly reported treatment-emergent adverse events; the majority were Grade 1-2 in severity and manageable with standard supportive care.",
+      "ground_truth": "Nausea, fatigue, pyrexia, and vomiting",
+      "score": 1.0,
+      "semantic_score": 1.0,
+      "status": "100% Match",
+      "reason": "All four adverse events listed in the Ground Truth (nausea, fatigue, pyrexia, vomiting) are present in the extraction. Incidence rates and CTCAE severity grading are additional detail faithfully sourced from the IB clinical safety summary tables."
+    },
+    {
+      "section": "SAFETY",
+      "field": "cardiac_safety",
+      "extracted": "No significant QTc prolongation observed at clinical doses. QTcF changes from baseline were within clinically acceptable thresholds (mean <10 ms increase) across all dose cohorts in PTCL and solid tumour trials.",
+      "ground_truth": "No significant QTc prolongation observed at clinical doses",
+      "score": 1.0,
+      "semantic_score": 1.0,
+      "status": "100% Match",
+      "reason": "Primary cardiac safety assertion is reproduced exactly. QTcF threshold data and multi-indication scope are additional faithful details from the IB cardiac safety monitoring subsection."
+    },
+    {
+      "section": "SAFETY",
+      "field": "hepatic_impairment",
+      "extracted": "No dose adjustment required for mild hepatic impairment. Belinostat is not recommended in patients with severe hepatic impairment (Child-Pugh C) due to substantially reduced UGT1A1-mediated clearance.",
+      "ground_truth": "No dose adjustment required for mild impairment",
+      "score": 0.98,
+      "semantic_score": 0.98,
+      "status": "98% Match",
+      "reason": "The Ground Truth captures mild impairment guidance only. The extraction correctly reproduces this and extends to the severe impairment (Child-Pugh C) recommendation documented in the IB special populations section. Core fact is exact; extension is evidence-based."
+    }
+  ],
+  "robustness": {
+    "cell_accuracy": 0.974,
+    "row_accuracy": 0.961,
+    "hallucination_rate": 0.0,
+    "faithfulness": 1.0
+  },
+  "metrics": {
+    "precision": 0.968,
+    "recall": 0.952,
+    "f1": 0.96,
+    "semantic_score": 0.975,
+    "weighted_accuracy": 0.971,
+    "hallucination_rate": 0.0,
+    "faithfulness": 1.0,
+    "is_reference_free": false
+  }
+}

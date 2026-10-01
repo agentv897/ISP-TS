@@ -1,0 +1,52 @@
+{
+  "document": {
+    "id": "belino_ib_demo",
+    "title": "Belinostat (PXD101) Investigator's Brochure",
+    "version": "13.0",
+    "date": "2016-04-11"
+  },
+  "sections": [
+    {
+      "section_id": "1",
+      "title": "PHYSICAL AND CHEMICAL PROPERTIES",
+      "content": {
+        "drug_name": "Belinostat",
+        "class": "Pan-histone deacetylase (HDAC) inhibitor",
+        "structure": "Sulfonamide-hydroxamide derivative",
+        "product_form": "Sterile lyophilized yellow powder",
+        "reconstitution": "9 mL Sterile Water for Injection",
+        "final_concentration": "50 mg/mL"
+      }
+    },
+    {
+      "section_id": "2",
+      "title": "MECHANISM OF ACTION",
+      "content": {
+        "target": "HDAC Class I and Class II enzymes",
+        "primary_effect": "Potent inhibitor of histone deacetylase (HDAC) enzymes",
+        "cellular_response": "Increased histone acetylation, cell cycle arrest, and apoptosis",
+        "specificity": "Zinc-dependent HDAC enzymes"
+      }
+    },
+    {
+      "section_id": "3",
+      "title": "PHARMACOKINETICS",
+      "content": {
+        "plasma_protein_binding": "Approximately 94% to 96% bound",
+        "metabolic_pathway": "Predominantly metabolized by UGT1A1 (glucuronidation)",
+        "elimination_half_life": "Approximately 1.1 hours (IV administration)",
+        "clearance": "Rapid terminal elimination"
+      }
+    },
+    {
+      "section_id": "4",
+      "title": "SAFETY AND TOLERABILITY",
+      "content": {
+        "common_adverse_events": "Nausea, fatigue, pyrexia, and vomiting",
+        "serious_adverse_events": "Pneumonia, pyrexia, and disease progression",
+        "cardiac_safety": "No significant QTc prolongation observed at clinical doses",
+        "hepatic_impairment": "No dose adjustment required for mild impairment"
+      }
+    }
+  ]
+}

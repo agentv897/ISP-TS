@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | DILI Platform Analysis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background: radial-gradient(circle at 50% 50%, #fefeff 0%, #f1f5f9 100%); color: #1e293b; overflow: hidden; }
+        .sidebar { background: #002970; color: white; border-right: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; }
+        .hcl-blue { color: #002970; }
+        .bg-hcl-blue { background-color: #002970; }
+        .chat-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-left: 1px solid #e2e8f0; transition: all 0.3s ease; }
+        .node { cursor: pointer; }
+        .link { stroke: #cbd5e1; stroke-opacity: 0.6; transition: stroke 0.3s; }
+        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 1rem; box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07); }
+        #graph-container { width: 100%; height: 100vh; background: transparent; }
+        .chat-bubble { max-width: 85%; padding: 0.75rem 1rem; border-radius: 0.75rem; font-size: 0.875rem; line-height: 1.5; }
+        .chat-user { background: #002970; color: white; align-self: flex-end; border-bottom-right-radius: 0.125rem; }
+        .chat-ai { background: #f1f5f9; color: #334155; align-self: flex-start; border-bottom-left-radius: 0.125rem; }
+    </style>
+</head>
+<body class="flex h-screen">
+
+    <!-- Left Navigation Sidebar -->
+    <aside class="w-16 bg-[#002970] h-full flex flex-col items-center py-6 gap-6 z-30 shadow-2xl">
+        <a href="/" class="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-[#002970] font-black text-lg mb-2 shadow-lg">H</a>
+        
+        <div class="flex flex-col gap-5 items-center w-full">
+            <button id="btn-master-controls" onclick="togglePanel('master-controls')" class="w-10 h-10 rounded-lg flex items-center justify-center text-blue-100 bg-white/20 text-white shadow-inner group relative">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <div class="absolute left-14 bg-gray-900 text-white text-[10px] px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-[100] font-bold tracking-widest uppercase shadow-2xl border border-white/10">Search Controls</div>
+            </button>
+
+            <button id="btn-property-inspector" onclick="togglePanel('property-inspector')" class="w-10 h-10 rounded-lg flex items-center justify-center text-blue-100 hover:bg-white/10 transition-all group relative">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                <div class="absolute left-14 bg-gray-900 text-white text-[10px] px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-[100] font-bold tracking-widest uppercase shadow-2xl border border-white/10">Molecule Properties</div>
+            </button>
+
+            <button id="btn-chat-panel" onclick="togglePanel('chat-panel')" class="w-10 h-10 rounded-lg flex items-center justify-center text-blue-100 hover:bg-white/10 transition-all group relative">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                <div class="absolute left-14 bg-gray-900 text-white text-[10px] px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-[100] font-bold tracking-widest uppercase shadow-2xl border border-white/10">DILI Assistant</div>
+            </button>
+
+            <button id="btn-graph-legend" onclick="togglePanel('graph-legend')" class="w-10 h-10 rounded-lg flex items-center justify-center text-blue-100 hover:bg-white/10 transition-all group relative">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                <div class="absolute left-14 bg-gray-900 text-white text-[10px] px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-[100] font-bold tracking-widest uppercase shadow-2xl border border-white/10">Graph Legend</div>
+            </button>
+
+            <button id="btn-stats-counter" onclick="togglePanel('stats-counter')" class="w-10 h-10 rounded-lg flex items-center justify-center text-blue-100 hover:bg-white/10 transition-all group relative">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                <div class="absolute left-14 bg-gray-900 text-white text-[10px] px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-[100] font-bold tracking-widest uppercase shadow-2xl border border-white/10">System Stats</div>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Left Property Inspector (Drawer) -->
+    <aside id="property-inspector" class="w-80 bg-white h-full flex flex-col z-20 shadow-xl border-r border-gray-100 hidden">
+        <div class="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+            <h3 class="text-sm font-bold hcl-blue uppercase tracking-widest">Molecule Details</h3>
+            <button onclick="togglePanel('property-inspector')" class="text-gray-400 hover:text-gray-600">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <div id="property-content" class="flex-1 overflow-y-auto p-6 space-y-6 no-scrollbar">
+            <div class="text-center py-20 opacity-30">
+                <svg class="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
+                <p class="text-xs font-bold uppercase tracking-widest">Select Node to Inspect</p>
+            </div>
+        </div>
+        <div id="inspector-footer" class="p-6 border-t border-gray-100 hidden">
+            <div class="grid grid-cols-2 gap-3">
+                <a id="btn-inspect-compare" href="#" class="bg-blue-600 text-white rounded-xl py-3 text-[10px] font-black shadow-lg shadow-blue-900/10 text-center uppercase tracking-widest hover:bg-blue-700 transition-all hover:scale-[1.02] active:scale-95">Compare</a>
+                <a id="btn-inspect-predict" href="#" class="bg-emerald-600 text-white rounded-xl py-3 text-[10px] font-black shadow-lg shadow-emerald-900/10 text-center uppercase tracking-widest hover:bg-emerald-700 transition-all hover:scale-[1.02] active:scale-95">Predict Tox</a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Graph Area -->
+    <main class="flex-1 relative overflow-hidden">
+        <div id="master-controls" class="absolute top-6 left-6 z-10 flex items-center gap-3 transition-all duration-500">
+            <div class="bg-white/90 backdrop-blur px-4 py-2 rounded-xl border border-gray-200 shadow-lg flex items-center gap-4 relative">
+                <div>
+                    <h2 class="text-[8px] font-bold text-gray-400 uppercase tracking-[0.2em]">DILI Analysis Engine</h2>
+                    <h1 id="main-header-title" class="text-lg font-black hcl-blue tracking-tight leading-tight">{{ drug }}</h1>
+                </div>
+                <div class="h-6 w-px bg-gray-200"></div>
+                <div>
+                    <select id="master-drug-registry" onchange="window.location.href='/dashboard?drug='+this.value" class="bg-gray-50 border border-gray-200 text-gray-700 text-xs rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full py-1.5 px-3 outline-none font-bold cursor-pointer hover:bg-gray-100 transition-colors">
+                        <option value="All" {% if drug == 'All' %}selected{% endif %}>Master Graph (All Drugs)</option>
+                        <option disabled>──────────</option>
+                        <!-- Dynamic drugs injected here -->
+                    </select>
+                </div>
+                <div class="h-6 w-px bg-gray-200 ml-2"></div>
+                <button onclick="togglePanel('master-controls')" class="text-gray-400 hover:text-red-500 transition-colors p-1" title="Hide Search Controls">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Graph Legend -->
+        <div id="graph-legend" class="absolute top-8 right-8 z-10 bg-white/95 backdrop-blur p-5 rounded-2xl border border-gray-200 shadow-2xl max-w-xs transition-opacity duration-1000">
+            <h3 class="text-[10px] font-bold uppercase tracking-widest text-slate-800 mb-4 border-b border-gray-100 pb-2">Graph Legend</h3>
+            <div class="space-y-3 flex flex-col">
+                <div class="flex items-center gap-3"><svg class="w-4 h-4" style="filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.3));"><path d="M8,0 L14.9,4 L14.9,12 L8,16 L1.1,12 L1.1,4 Z" fill="#3b82f6" stroke="#1d4ed8" stroke-width="1.5"/></svg><span class="text-xs font-semibold text-slate-600">Drug (Hexagon)</span></div>
+                <div class="flex items-center gap-3"><svg class="w-4 h-4" style="filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.3));"><polygon points="8,1 15,8 8,15 1,8" fill="#14b8a6" stroke="#0f766e" stroke-width="1.5"/></svg><span class="text-xs font-semibold text-slate-600">Target/Gene (Diamond)</span></div>
+                <div class="flex items-center gap-3"><svg class="w-4 h-4" style="filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.3));"><rect x="2" y="2" width="12" height="12" fill="#a855f7" stroke="#7e22ce" stroke-width="1.5"/></svg><span class="text-xs font-semibold text-slate-600">Pathway (Square)</span></div>
+                <div class="flex items-center gap-3"><svg class="w-4 h-4" style="filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.3));"><polygon points="8,1 15,13 1,13" fill="#22c55e" stroke="#15803d" stroke-width="1.5"/></svg><span class="text-xs font-semibold text-slate-600">Preclinical/Species (Triangle)</span></div>
+                <div class="flex items-center gap-3"><svg class="w-4 h-4" style="filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.3));"><polygon points="8,15 15,3 1,3" fill="#ef4444" stroke="#b91c1c" stroke-width="1.5"/></svg><span class="text-xs font-semibold text-slate-600">Adverse Event (Triangle Down)</span></div>
+                <div class="flex items-center gap-3"><svg class="w-4 h-4" style="filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.3));"><circle cx="8" cy="8" r="6" fill="#f59e0b" stroke="#b45309" stroke-width="1.5"/></svg><span class="text-xs font-semibold text-slate-600">Clinical Endpoint (Circle)</span></div>
+            </div>
+        </div>
+        
+        <svg id="graph-container" class="w-full h-full"></svg>
+
+        <!-- Stats Counter -->
+        <div id="stats-counter" class="absolute bottom-8 left-8 p-5 bg-white/80 backdrop-blur border border-gray-200 rounded-2xl flex gap-6 shadow-xl transition-opacity duration-1000">
+            <div class="text-center"><div class="text-[9px] uppercase font-bold text-gray-400">Nodes</div><div class="text-lg font-black hcl-blue">142</div></div>
+            <div class="w-px h-8 bg-gray-200"></div>
+            <div class="text-center"><div class="text-[9px] uppercase font-bold text-gray-400">Edges</div><div class="text-lg font-black hcl-blue">389</div></div>
+        </div>
+    </main>
+
+    <!-- Right AI Chat Panel -->
+    <aside id="chat-panel" class="w-96 bg-white h-full flex flex-col z-20 shadow-2xl border-l border-gray-100 hidden">
+        <div class="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-hcl-blue rounded-lg flex items-center justify-center text-white font-bold text-xs shadow-lg shadow-blue-900/10">AI</div>
+                <h3 class="text-sm font-bold hcl-blue uppercase tracking-widest">DILI Assistant</h3>
+            </div>
+            <button onclick="togglePanel('chat-panel')" class="text-gray-400 hover:text-gray-600">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <div id="chat-history" class="flex-1 overflow-y-auto p-6 flex flex-col gap-4 no-scrollbar">
+            <div class="chat-bubble chat-ai">
+                System online. I have mapped <strong>{{ drug }}</strong> relationships. How can I help?
+            </div>
+        </div>
+        <div class="p-6 border-t border-gray-100">
+            <div class="relative">
+                <input type="text" id="chat-input" placeholder="Query Knowledge Graph..." 
+                       class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-4 pr-12 text-sm focus:ring-2 focus:ring-[#002970] outline-none">
+                <button id="send-btn" class="absolute right-2 top-2 w-8 h-8 bg-hcl-blue rounded-lg flex items-center justify-center text-white">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Floating Chatbit Toggle -->
+    <button id="chat-toggle-floating" onclick="togglePanel('chat-panel')" class="fixed bottom-8 right-8 w-14 h-14 bg-hcl-blue text-white rounded-full flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all z-[60] group border-4 border-white/40">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+        <span class="absolute right-20 bg-hcl-blue text-white text-[10px] font-black px-4 py-2 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap shadow-2xl tracking-widest uppercase border border-white/10">Ask DILI Assistant</span>
+    </button>
+
+    <!-- Compare Cart (Floating bottom-center) -->
+    <div id="compare-cart-banner" class="absolute bottom-8 left-1/2 -translate-x-1/2 z-50 bg-white/95 backdrop-blur shadow-2xl rounded-2xl p-2 pl-6 pr-2 flex items-center gap-6 transition-transform duration-500 translate-y-32 ring-1 ring-black/5">
+        <div class="flex items-center gap-4 py-2">
+            <div class="w-10 h-10 bg-green-50 rounded-full flex items-center justify-center text-green-600 font-black shadow-inner" id="cart-count">0</div>
+            <div class="max-w-[200px] truncate">
+                <div class="text-[9px] font-bold text-gray-500 uppercase tracking-[0.2em] mb-0.5">Compare Report</div>
+                <div class="text-sm font-black text-slate-800 truncate" id="cart-list">No drugs added</div>
+            </div>
+        </div>
+        <div class="h-8 w-px bg-gray-200"></div>
+        <a id="cart-compare-btn" href="#" class="bg-green-600 text-white text-xs font-black px-6 py-4 rounded-xl shadow-lg shadow-green-900/20 hover:bg-green-700 hover:scale-[1.02] transition-all whitespace-nowrap">
+            Generate Matrix &rarr;
+        </a>
+    </div>
+
+    <script>
+        window.compareCart = new Set();
+        
+        window.toggleCompareCart = function(drug) {
+            if (window.compareCart.has(drug)) {
+                window.compareCart.delete(drug);
+            } else {
+                window.compareCart.add(drug);
+            }
+            
+            // Dispatch event to trick active property panel into refreshing its button state
+            window.dispatchEvent(new Event('cartUpdated'));
+
+            const banner = document.getElementById('compare-cart-banner');
+            if (window.compareCart.size > 0) {
+                banner.classList.remove('translate-y-32');
+                document.getElementById('cart-count').innerText = window.compareCart.size;
+                document.getElementById('cart-list').innerText = Array.from(window.compareCart).join(', ');
+                document.getElementById('cart-compare-btn').href = `/compare?mode=compare&drugs=${encodeURIComponent(Array.from(window.compareCart).join(','))}`;
+            } else {
+                banner.classList.add('translate-y-32');
+            }
+        };
+
+        function togglePanel(id) {
+            const panel = document.getElementById(id);
+            const btn = document.getElementById('btn-' + id);
+            
+            panel.classList.toggle('hidden');
+
+            // Hide floating chatbot toggle if chat panel is open
+            if (id === 'chat-panel') {
+                const floatingToggle = document.getElementById('chat-toggle-floating');
+                if (floatingToggle) {
+                    if (!panel.classList.contains('hidden')) {
+                        floatingToggle.style.display = 'none';
+                    } else {
+                        floatingToggle.style.display = 'flex';
+                    }
+                }
+            }
+            
+            // Toggle active state styling on the sidebar button
+            if (btn) {
+                if (!panel.classList.contains('hidden')) {
+                    btn.classList.add('bg-white/20', 'text-white', 'shadow-inner');
+                } else {
+                    btn.classList.remove('bg-white/20', 'text-white', 'shadow-inner');
+                }
+            }
+
+            // Special handling for the legend which is absolute positioned
+            if (id === 'graph-legend') {
+                panel.style.display = panel.classList.contains('hidden') ? 'none' : 'block';
+            }
+
+            // Trigger resize to update graph width
+            setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
+            }, 300); // Wait for transition
+        }
+
+        // DYNAMIC DRUG REGISTRY POPULATION
+        async function fetchRegistry() {
+            const res = await fetch('/api/drugs');
+            const drugs = await res.json();
+            const select = document.getElementById('master-drug-registry');
+            const currentDrug = "{{ drug }}";
+            
+            // Sort by name for better UX
+            drugs.sort((a,b) => a.name.localeCompare(b.name));
+
+            drugs.forEach(d => {
+                // Avoid duplicating 'All' or hardcoded logic
+                if (d.name === 'Fentanyl' || d.name === 'Esketamine') {
+                    // Check if already in the static list if you kept them, 
+                    // but since I cleared the list, we add everything.
+                }
+                const opt = document.createElement('option');
+                opt.value = d.name;
+                opt.innerText = `${d.name} (${d.type})`;
+                if (d.name === currentDrug) opt.selected = true;
+                select.appendChild(opt);
+            });
+        }
+        fetchRegistry();
+    </script>
+    <script src="/static/js/graph.js"></script>
+    <script src="/static/js/chat.js"></script>
+</body>
+</html>

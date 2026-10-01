@@ -1,0 +1,8 @@
+flask
+flask-cors
+python-dotenv
+flasgger
+gunicorn
+requests
+google-cloud-spanner
+openai

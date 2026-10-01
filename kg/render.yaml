@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: toxigraph-dili-platform
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn flask_server:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.6"
+      - key: PORT
+        value: "10000"
+      - key: SPANNER_PROJECT_ID
+        sync: false
+      - key: SPANNER_INSTANCE_ID
+        sync: false
+      - key: SPANNER_DATABASE_ID
+        sync: false
